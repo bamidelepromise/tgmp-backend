@@ -10,9 +10,9 @@ const XLSX = require("xlsx");
 //@route POST /api/register
 //@access public
 exports.registerUser = async (req, res) => {
-  const { fullname, email, sex, phoneNumber, address } = req.body;
+  const { fullname, email, gender, phoneNumber, address } = req.body;
   try {
-    if (!fullname || !email || !sex || !phoneNumber) {
+    if (!fullname || !email || !gender || !phoneNumber) {
       return helper.controllerResult({
         req,
         res,
@@ -35,7 +35,7 @@ exports.registerUser = async (req, res) => {
     const user = await User.create({
       fullname,
       email,
-      sex,
+      gender,
       phoneNumber,
       address,
     });
@@ -95,9 +95,9 @@ exports.registerUsersFromExcel = async (req, res) => {
     const errors = [];
 
     for (const row of sheetData) {
-      const { FULLNAME, EMAIL, SEX, PHONENUMBER, ADDRESS } = row;
+      const { FULLNAME, EMAIL, GENDER, PHONENUMBER, ADDRESS } = row;
 
-      if (!FULLNAME || !EMAIL || !SEX || !PHONENUMBER) {
+      if (!FULLNAME || !EMAIL || !GENDER || !PHONENUMBER) {
         errors.push({ row, message: "Missing required fields." });
         continue;
       }
@@ -112,7 +112,7 @@ exports.registerUsersFromExcel = async (req, res) => {
         const user = await User.create({
           fullname: FULLNAME,
           email: EMAIL,
-          sex: SEX,
+          gender: GENDER,
           phoneNumber: PHONENUMBER,
           address: ADDRESS,
         });

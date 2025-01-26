@@ -10,9 +10,9 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please add the user email address"],
     unique: [true, "Email address already taken"],
   },
-  sex: {
+  gender: {
     type: String,
-    required: [true, "Please add sex"],
+    required: [true, "Please add gender"],
   },
   phoneNumber: {
     type: String,
