@@ -3,7 +3,6 @@ const nodemailer = require("nodemailer");
 const User = require("../Models/userModel");
 const { scheduleTime } = require("../Utilities/emailTemplate");
 require("dotenv").config();
-// import { Axios } from "axios";
 const axios = require("axios");
 
 
@@ -29,7 +28,7 @@ const sendWeeklyEmails = async (subject, message) => {
     }
 
     for (const user of users) {
-      const { email, fullname } = user; // Destructure to get name and address
+      const { email, fullname } = user; 
 
       // Personalize the email content with the user's name and address
       const personalizedMessage = message.replace("${fullname}", fullname);

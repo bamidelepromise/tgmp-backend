@@ -5,7 +5,6 @@ const XLSX = require("xlsx");
 const { scheduleTime } = require("../../Utilities/emailTemplate");
 const User = require("../../Models/userModel");
 
-
 require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
@@ -62,8 +61,6 @@ const sendMailerToMember = asyncHandler(async (req, res) => {
     html: mailBody,
   };
 
-  
-
   try {
     await transporter.sendMail(mailOptions);
     return helper.controllerResult({
@@ -77,6 +74,61 @@ const sendMailerToMember = asyncHandler(async (req, res) => {
       res,
       statusCode: 500,
       result: error,
+      message: error.message,
+    });
+  }
+});
+
+const sendScheduledEmails = asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find();
+    if (!users.length) {
+      return helper.controllerResult({
+        req,
+        res,
+        statusCode: 404,
+        message: "No users found to send emails",
+      });
+    }
+
+    // Send an email to each user
+    for (const user of users) {
+      const subject = "Sunday Service Invitation";
+      const message = `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
+            <h2 style="text-align: center; color: #007bff;">Sunday Service Invitation</h2>
+
+            <p>Dear <strong>${user.fullname}</strong>,</p>
+
+            <p>We warmly remind you to join us for our Sunday service. Here’s the schedule:</p>
+            ${scheduleTime}
+
+            <p><strong>Location:</strong> @ B4, Plot 456, Obafemi Awolowo/Mike Akigbe Way, by Apostolic Faith Bus Stop, Jabi, Abuja</p>
+            <p><strong>Date:</strong> This Sunday</p>
+            <p><strong>Contact:</strong> apostolicfaithjabi@gmail.com | 08130567664</p>
+
+            <p>We pray for God's blessings and look forward to seeing you soon.</p>
+
+            <p style="font-weight: bold; color: #007bff;">The Apostolic Faith Church &copy; IT Team</p>
+          </div>
+        </div>
+      `;
+
+      await sendWeeklyEmails(user.email, subject, message);
+    }
+
+    return helper.controllerResult({
+      req,
+      res,
+      statusCode: 200,
+      message: "Emails sent successfully to all users",
+    });
+  } catch (error) {
+    return helper.controllerResult({
+      req,
+      res,
+      statusCode: 500,
       message: error.message,
     });
   }
@@ -186,4 +238,4 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { sendMailerToMember, sendInvitationToAll };
+module.exports = { sendMailerToMember, sendInvitationToAll, sendScheduledEmails };

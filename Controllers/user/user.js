@@ -67,6 +67,26 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    return helper.controllerResult({
+      req,
+      res,
+      statusCode: 200,
+      result: users,
+      message: "Users retrieved successfully",
+    });
+  } catch (error) {
+    return helper.controllerResult({
+      req,
+      res,
+      statusCode: 500,
+      message: error.message,
+    });
+  }
+};
+
 exports.registerUsersFromExcel = async (req, res) => {
   try {
     if (!req.file) {
