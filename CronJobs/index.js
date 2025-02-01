@@ -156,9 +156,9 @@ cron.schedule("* * * * *", async () => {
     const api = axios.create({ baseURL: baseUrl });
 
     const response = await api.get("/healthz");
-    console.log("Health check successful:", response.data);
+    // console.log("Health check successful:", response.data);
   } catch (error) {
-    console.error("Health check failed:", error.message);
+    // console.error("Health check failed:", error.message);
   }
 }); 
 
