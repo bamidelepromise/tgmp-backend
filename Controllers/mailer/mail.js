@@ -115,7 +115,7 @@ const sendScheduledEmails = asyncHandler(async (req, res) => {
         </div>
       `;
 
-      await sendWeeklyEmails(user.email, subject, message);
+      await helper.sendEmailHelper(user.email, subject, message);
     }
 
     return helper.controllerResult({
