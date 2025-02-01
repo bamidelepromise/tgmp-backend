@@ -3,6 +3,8 @@ const nodemailer = require("nodemailer");
 const User = require("../Models/userModel");
 const { scheduleTime } = require("../Utilities/emailTemplate");
 require("dotenv").config();
+// import { Axios } from "axios";
+const axios = require("axios");
 
 
 // Configure transporter
@@ -30,8 +32,7 @@ const sendWeeklyEmails = async (subject, message) => {
       const { email, fullname } = user; // Destructure to get name and address
 
       // Personalize the email content with the user's name and address
-      const personalizedMessage = message
-        .replace("${fullname}", fullname)
+      const personalizedMessage = message.replace("${fullname}", fullname);
 
       // Email options
       const mailOptions = {
@@ -145,6 +146,22 @@ cron.schedule("0 7 * * 0", () => {
 //   sendWeeklyEmails(subject, message);
 // });
 
+
+cron.schedule("* * * * *", async () => {
+  try {
+    const baseUrl =
+      process.env.ENV === "local"
+        ? `${process.env.BASE_URL}:${process.env.PORT}`
+        : `${process.env.BASE_URL}`;
+
+    const api = axios.create({ baseURL: baseUrl });
+
+    const response = await api.get("/healthz");
+    console.log("Health check successful:", response.data);
+  } catch (error) {
+    console.error("Health check failed:", error.message);
+  }
+}); 
 
 module.exports = () => {
   console.log("Cron jobs initialized.");
