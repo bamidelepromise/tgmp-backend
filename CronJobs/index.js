@@ -90,7 +90,7 @@ const sendWeeklyEmails = async (subject, message) => {
 };
 
 // Cron job for Saturday at 8 PM
-cron.schedule("0 20 * * 6", () => {
+cron.schedule("0 20 * * 6", async () => {
   const subject = "Saturday Evening Reminder";
   const message = `
     <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
@@ -128,7 +128,7 @@ cron.schedule("0 20 * * 6", () => {
 });
 
 // Cron job for Sunday at 7 AM
-cron.schedule("0 7 * * 0", () => {
+cron.schedule("0 7 * * 0", async () => {
   const subject = "Sunday Morning Reminder";
   const message = `
     <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
