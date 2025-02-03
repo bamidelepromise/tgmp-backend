@@ -16,24 +16,58 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send emails
+// const sendWeeklyEmails = async (subject, message) => {
+//   try {
+//     console.log("Running weekly email job...");
+
+//     // Fetch user emails and names from the database
+//     const users = await User.find({});
+//     if (!users.length) {
+//       console.log("No recipients found in the database.");
+//       return;
+//     }
+
+//     for (const user of users) {
+//       const { email, fullname } = user; 
+
+//       // Personalize the email content with the user's name and address
+//       const personalizedMessage = message.replace("${fullname}", fullname);
+
+//       // Email options
+//       const mailOptions = {
+//         from: process.env.EMAIL_USER,
+//         to: email,
+//         subject,
+//         html: personalizedMessage,
+//       };
+
+//       // Send email
+//       await transporter.sendMail(mailOptions);
+//       console.log(`Weekly email sent to ${fullname} (${email}) successfully.`);
+//     }
+//   } catch (error) {
+//     console.error("Error sending weekly emails:", error);
+//   }
+// };
+
 const sendWeeklyEmails = async (subject, message) => {
   try {
     console.log("Running weekly email job...");
 
     // Fetch user emails and names from the database
     const users = await User.find({});
-    if (users.length === 0) {
+    if (!users.length) {
       console.log("No recipients found in the database.");
       return;
     }
 
-    for (const user of users) {
-      const { email, fullname } = user; 
+    // Send emails concurrently
+    const emailPromises = users.map((user) => {
+      const { email, fullname } = user;
 
-      // Personalize the email content with the user's name and address
-      const personalizedMessage = message.replace("${fullname}", fullname);
+      // Personalize email content
+      const personalizedMessage = message.replace(/\$\{fullname\}/g, fullname);
 
-      // Email options
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
@@ -41,10 +75,15 @@ const sendWeeklyEmails = async (subject, message) => {
         html: personalizedMessage,
       };
 
-      // Send email
-      await transporter.sendMail(mailOptions);
-      console.log(`Weekly email sent to ${fullname} (${email}) successfully.`);
-    }
+      // Send email and return promise
+      return transporter.sendMail(mailOptions)
+        .then(() => console.log(`Email sent to ${fullname} (${email})`))
+        .catch((err) => console.error(`Failed to send email to ${fullname}:`, err));
+    });
+
+    // Wait for all emails to be sent
+    await Promise.allSettled(emailPromises);
+    console.log("Weekly email job completed.");
   } catch (error) {
     console.error("Error sending weekly emails:", error);
   }
@@ -58,10 +97,10 @@ cron.schedule("0 20 * * 6", () => {
       <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
         <h2 style="text-align: center; color: #007bff;">Sunday Service Invitation</h2>
 
-        <p>Dear <strong>\${fullname}</strong>,</p>
+        <p>Dear <strong>${fullname}</strong>,</p>
 
         <p>We warmly remind you to join us for our Sunday service tomorrow. Here’s the schedule:</p>
-        \${scheduleTime}
+        ${scheduleTime}
 
         <p style="line-height: 1.6;">We are looking forward to worshiping with you and growing together in faith. Your presence would be a blessing to us!</p>
 
@@ -79,7 +118,13 @@ cron.schedule("0 20 * * 6", () => {
       </div>
     </div>
   `;
-  sendWeeklyEmails(subject, message);
+
+  try {
+    await sendWeeklyEmails(subject, message);
+    console.log("Sunday Reminder Email Sent Successfully.");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 });
 
 // Cron job for Sunday at 7 AM
@@ -111,7 +156,13 @@ cron.schedule("0 7 * * 0", () => {
       </div>
     </div>
   `;
-  sendWeeklyEmails(subject, message);
+
+  try {
+    await sendWeeklyEmails(subject, message);
+    console.log("Sunday Reminder Email Sent Successfully.");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 });
 
 // cron.schedule("* * * * *", () => {
