@@ -1,14 +1,12 @@
-// emailTemplates.js
-
 exports.saturdayReminder = (name, location) => `
   <p>Dear ${name},</p>
   <p>This is a gentle reminder about our church service tomorrow morning.</p>
   <ul>
     <li><strong>Children's Sunday School:</strong> 8:30 AM</li>
-    <li><strong>Adult's Sunday School:</strong> 9:00 AM</li>
+    <li><strong>Morning Devotional service:</strong> 9:00 AM</li>
     <li><strong>Children's service:</strong> 9:40 AM</li>
-    <li><strong>Adult's Devotional School:</strong> 9:00 AM</li>
-    <li><strong>Evangelistic Service:</strong> 4:30 PM</li>
+    <li><strong>Morning Devotional service:</strong> 9:00 AM</li>
+    <li><strong>Evening Revival and Evangelistic service:</strong> 4:30 PM</li>
   </ul>
   <p>Location: ${location}</p>
   <p>God bless you!</p>
@@ -19,10 +17,10 @@ exports.sundayMorningReminder = (name, location) => `
   <p>It's another beautiful day to worship and fellowship together!</p>
   <ul>
     <li><strong>Children's Sunday School:</strong> 8:30 AM</li>
-    <li><strong>Adult's Sunday School:</strong> 9:00 AM</li>
+    <li><strong>Morning Devotional service:</strong> 9:00 AM</li>
     <li><strong>Children's service:</strong> 9:40 AM</li>
-    <li><strong>Adult's Devotional School:</strong> 9:00 AM</li>
-    <li><strong>Evangelistic Service:</strong> 4:30 PM</li>
+    <li><strong>Morning Devotional service:</strong> 9:00 AM</li>
+    <li><strong>Evening Revival and Evangelistic service:</strong> 4:30 PM</li>
   </ul>
   <p>Location: ${location}</p>
   <p>God bless you abundantly.</p>
@@ -43,7 +41,7 @@ exports.scheduleTime = `
         <td style="padding: 10px; text-align: left;">8:30 AM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
-        <td style="padding: 10px; text-align: left;"><strong>Adult's Sunday School</strong></td>
+        <td style="padding: 10px; text-align: left;"><strong>Morning service</strong></td>
         <td style="padding: 10px; text-align: left;">9:00 AM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
@@ -51,19 +49,23 @@ exports.scheduleTime = `
         <td style="padding: 10px; text-align: left;">9:40 AM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
-        <td style="padding: 10px; text-align: left;"><strong>Adult's Devotional School</strong></td>
-        <td style="padding: 10px; text-align: left;">9:00 AM</td>
+        <td style="padding: 10px; text-align: left;"><strong>Morning Devotional service</strong></td>
+        <td style="padding: 10px; text-align: left;">10:45 AM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
-        <td style="padding: 10px; text-align: left;"><strong>Evangelistic Service</strong></td>
+        <td style="padding: 10px; text-align: left;"><strong>Evening Revival and Evangelistic service</strong></td>
         <td style="padding: 10px; text-align: left;">4:30 PM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
-        <td style="padding: 10px; text-align: left;"><strong>Monday - Saturday Morning Prayer</strong></td>
+        <td style="padding: 10px; text-align: left;"><strong>Morning Prayer (Monday - Saturday)</strong></td>
         <td style="padding: 10px; text-align: left;">5:30 AM - 6:00 AM</td>
       </tr>
       <tr style="border: 1px solid #ddd;">
-        <td style="padding: 10px; text-align: left;"><strong>Monday - Friday Evening Prayer</strong></td>
+        <td style="padding: 10px; text-align: left;"><strong>Evening Prayer (Tuesday & Thursday)</strong></td>
+        <td style="padding: 10px; text-align: left;">6:00 PM - 8:00 PM</td>
+      </tr>
+      <tr style="border: 1px solid #ddd;">
+        <td style="padding: 10px; text-align: left;"><strong>Bible study (Wednesday)</strong></td>
         <td style="padding: 10px; text-align: left;">6:00 PM - 8:00 PM</td>
       </tr>
     </tbody>
