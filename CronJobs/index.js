@@ -16,39 +16,6 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send emails
-// const sendWeeklyEmails = async (subject, message) => {
-//   try {
-//     console.log("Running weekly email job...");
-
-//     // Fetch user emails and names from the database
-//     const users = await User.find({});
-//     if (!users.length) {
-//       console.log("No recipients found in the database.");
-//       return;
-//     }
-
-//     for (const user of users) {
-//       const { email, fullname } = user; 
-
-//       // Personalize the email content with the user's name and address
-//       const personalizedMessage = message.replace("${fullname}", fullname);
-
-//       // Email options
-//       const mailOptions = {
-//         from: process.env.EMAIL_USER,
-//         to: email,
-//         subject,
-//         html: personalizedMessage,
-//       };
-
-//       // Send email
-//       await transporter.sendMail(mailOptions);
-//       console.log(`Weekly email sent to ${fullname} (${email}) successfully.`);
-//     }
-//   } catch (error) {
-//     console.error("Error sending weekly emails:", error);
-//   }
-// };
 
 const sendWeeklyEmails = async (subject, message) => {
   try {
@@ -138,7 +105,7 @@ cron.schedule("0 7 * * 0", async () => {
         <p>Dear <strong>\${fullname}</strong>,</p>
 
         <p>Good morning! We warmly remind you to join us for our Sunday service tomorrow. Here’s the schedule:</p>
-        \${scheduleTime}
+        ${scheduleTime}
 
         <p style="line-height: 1.6;">We are looking forward to worshiping with you and growing together in faith. Your presence would be a blessing to us!</p>
 
@@ -175,7 +142,7 @@ cron.schedule("0 7 * * 0", async () => {
 //         <p>Dear <strong>\${fullname}</strong>,</p>
 
 //         <p>Good morning! We warmly remind you to join us for our Sunday service tomorrow. Here’s the schedule:</p>
-//         \${scheduleTime}
+//         ${scheduleTime}
 
 //         <p style="line-height: 1.6;">We are looking forward to worshiping with you and growing together in faith. Your presence would be a blessing to us!</p>
 
@@ -197,7 +164,8 @@ cron.schedule("0 7 * * 0", async () => {
 // });
 
 
-cron.schedule("* * * * *", async () => {
+// cron.schedule("* * * * *", async () => {
+  cron.schedule("0 * * * *", async () => {
   try {
     const baseUrl =
       process.env.ENV === "local"
@@ -207,9 +175,9 @@ cron.schedule("* * * * *", async () => {
     const api = axios.create({ baseURL: baseUrl });
 
     const response = await api.get("/healthz");
-    // console.log("Health check successful:", response.data);
+    console.log("Health check successful:", response.data, new Date().toLocaleString());
   } catch (error) {
-    // console.error("Health check failed:", error.message);
+    console.error("Health check failed:", error.message, new Date().toLocaleString());
   }
 }); 
 
