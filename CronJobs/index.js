@@ -102,7 +102,7 @@ cron.schedule("0 7 * * 0", async () => {
       <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
         <h2 style="text-align: center; color: #007bff;">Sunday Service Invitation</h2>
 
-        <p>Dear <strong>\${fullname}</strong>,</p>
+        <p>Dear <strong>${fullname}</strong>,</p>
 
         <p>Good morning! We warmly remind you to join us for our Sunday service tomorrow. Here’s the schedule:</p>
         ${scheduleTime}
@@ -139,7 +139,7 @@ cron.schedule("0 7 * * 0", async () => {
 //       <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
 //         <h2 style="text-align: center; color: #007bff;">Sunday Service Invitation</h2>
 
-//         <p>Dear <strong>\${fullname}</strong>,</p>
+//         <p>Dear <strong>${fullname}</strong>,</p>
 
 //         <p>Good morning! We warmly remind you to join us for our Sunday service tomorrow. Here’s the schedule:</p>
 //         ${scheduleTime}
