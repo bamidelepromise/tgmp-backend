@@ -145,10 +145,9 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
       });
     }
 
-    // Read and parse the Excel file
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    let sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
     if (!Array.isArray(sheetData) || sheetData.length === 0) {
       return helper.controllerResult({
@@ -160,75 +159,88 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
     }
 
     const errors = [];
+    const updatedSheetData = [];
 
     const subject = "The Green Money Project Team";
-    const address =
-      "B4, Plot 456, Obafemi Awolowo/Mike Akigbe Way, by Apostolic Faith Bus Stop, Jabi, Abuja";
-    const schedule = scheduleTime;
+    const batchSize = 20; // Number of emails per batch
+    const delayBetweenBatches = 5000; // 5 seconds delay between batches
 
-    // Iterate through the rows and send emails
-    for (const row of sheetData) {
+    // Function to process a batch of emails
+    const processBatch = async (batch) => {
+      for (const row of batch) {
+        const { FIRSTNAME, EMAIL } = row;
 
-      const { FIRSTNAME, EMAIL } = row;
+        if (!FIRSTNAME || !EMAIL) {
+          errors.push({ row, message: "Missing required fields (First Name or Email)." });
+          row.SUCCESSFUL = "No (Missing Info)";
+          updatedSheetData.push(row);
+          continue;
+        }
 
-      if (!FIRSTNAME || !EMAIL) {
-        errors.push({
-          row,
-          message: "Missing required fields (fullname or email).",
-        });
-        continue;
+        const mailBody = `
+          <div style="font-family: Arial, sans-serif; background-color: #ffffff; padding: 20px; color: #000;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px;">
+              <h2 style="text-align: center;">Thank You for Your Application</h2>
+              <p>Dear <strong>${FIRSTNAME}</strong>,</p>
+              <p>Thank you for your interest in the <strong>Presidential Initiative for the Empowerment of Young Farmers</strong> (The Green Money Project).</p>
+              <p>The first batch of candidates will be contacted in March 2025 regarding the next steps.</p>
+              <p>Stay updated by following our social media pages:</p>
+              <ul style="list-style-type: none; padding: 0;">
+                <li><strong>YouTube:</strong> <a href="https://www.youtube.com/@thegreenmoneyproject">The Green Money Project</a></li>
+                <li><strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=61567909974481">The Green Money Project</a></li>
+                <li><strong>Instagram:</strong> <a href="https://www.instagram.com/thegreenmoneyproject/">@thegreenmoneyproject</a></li>
+                <li><strong>X (Twitter):</strong> <a href="https://x.com/thegreenmoneyng"> @thegreenmoneyng</a></li>
+              </ul>
+              <p>Best regards,</p>
+              <p><strong>The Green Money Project Team</strong></p>
+            </div>
+          </div>`;
+
+        const mailOptions = {
+          from: process.env.EMAIL,
+          to: EMAIL,
+          subject,
+          html: mailBody,
+        };
+
+        try {
+          await transporter.sendMail(mailOptions);
+          row.SUCCESSFUL = "Yes"; // Mark as successfully sent
+        } catch (error) {
+          errors.push({ EMAIL, message: error.message });
+          row.SUCCESSFUL = "No (Error: " + error.message + ")";
+        }
+
+        updatedSheetData.push(row);
       }
+    };
 
-      const mailBody = `
-  <div style="font-family: Arial, sans-serif; background-color: #ffffff; padding: 20px; color: #000;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px;">
-      <h2 style="text-align: center;">Thank You for Your Application</h2>
+    // Split data into batches
+    const batches = [];
+    for (let i = 0; i < sheetData.length; i += batchSize) {
+      batches.push(sheetData.slice(i, i + batchSize));
+    }
 
-      <p>Dear <strong>${FIRSTNAME}</strong>,</p>
+    // Process each batch with delay
+    for (let i = 0; i < batches.length; i++) {
+      console.log(`Processing batch ${i + 1} of ${batches.length}...`);
+      await processBatch(batches[i]);
 
-      <p>Thank you for your interest in the <strong>Presidential Initiative for the Empowerment of Young Farmers</strong> (The Green Money Project) and for taking the time to complete and submit your application.</p>
-
-      <p>We have received an exceptionally high volume of applications, and our team has diligently reviewed each submission. We appreciate your patience and understanding throughout this process.</p>
-
-      <p>The first batch of candidates will be contacted in this month of March 2025 regarding the next steps. Applicants in subsequent batches will be contacted accordingly.</p>
-
-      <p>Stay updated by subscribing and following our social media pages:</p>
-
-      <ul style="list-style-type: none; padding: 0;">
-        <li><strong>YouTube:</strong> <a href="https://www.youtube.com/@thegreenmoneyproject" style="text-decoration: underline;">The Green Money Project</a></li>
-        <li><strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=61567909974481&mibextid=ZbWKwL" style="text-decoration: underline;">The Green Money Project</a></li>
-        <li><strong>Instagram:</strong> <a href="https://www.instagram.com/thegreenmoneyproject/profilecard/?igsh=NTY4NTliYm1ueTV1" style="text-decoration: underline;">@thegreenmoneyproject</a></li>
-        <li><strong>X (Twitter):</strong> <a href="https://x.com/thegreenmoneyng?t=ZoDE2M1SNoYZHi0q_vJmkg&s=09" style="text-decoration: underline;">@thegreenmoneyng</a></li>
-      </ul>
-
-      <p>We look forward to the opportunity of working with you on this impactful project.</p>
-
-      <p>Best regards,</p>
-      <p><strong>The Green Money Project Team</strong></p>
-    </div>
-  </div>
-`;
-
-      const mailOptions = {
-        from: process.env.EMAIL,
-        to: EMAIL,
-        subject,
-        html: mailBody,
-      };
-
-      try {
-        await transporter.sendMail(mailOptions);
-      } catch (error) {
-        errors.push({ EMAIL, message: error.message });
+      if (i < batches.length - 1) {
+        console.log(`Waiting ${delayBetweenBatches / 1000} seconds before next batch...`);
+        await new Promise((resolve) => setTimeout(resolve, delayBetweenBatches));
       }
     }
+
+    // Save updated data to an Excel file
+    saveToExcel(updatedSheetData);
 
     return helper.controllerResult({
       req,
       res,
       statusCode: 200,
       result: { errors },
-      message: "Emails sent successfully,",
+      message: "Emails processed successfully in batches.",
     });
   } catch (error) {
     return helper.controllerResult({
@@ -240,6 +252,17 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// Function to save updated data to an Excel file
+const saveToExcel = (data) => {
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Emails");
+
+  // Save file
+  XLSX.writeFile(workbook, "email_status.xlsx");
+  console.log("📁 Excel file saved: email_status.xlsx");
+};
 
 module.exports = {
   sendMailerToMember,
