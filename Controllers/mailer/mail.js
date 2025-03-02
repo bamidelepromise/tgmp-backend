@@ -161,17 +161,17 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
 
     const errors = [];
 
-    // Email body details
-    const subject = "Sunday Service Invitation";
+    const subject = "The Green Money Project Team";
     const address =
       "B4, Plot 456, Obafemi Awolowo/Mike Akigbe Way, by Apostolic Faith Bus Stop, Jabi, Abuja";
     const schedule = scheduleTime;
 
     // Iterate through the rows and send emails
     for (const row of sheetData) {
-      const { FULLNAME, EMAIL, ADDRESS } = row;
 
-      if (!EMAIL || !FULLNAME) {
+      const { FIRSTNAME, EMAIL } = row;
+
+      if (!FIRSTNAME || !EMAIL) {
         errors.push({
           row,
           message: "Missing required fields (fullname or email).",
@@ -180,31 +180,34 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
       }
 
       const mailBody = `
-      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 20px;">
-          <h2 style="text-align: center; color: #007bff;">Sunday Service Invitation</h2>
-    
-          <p>Dear <strong>${FULLNAME}</strong>,</p>
-    
-          <p>We warmly invite you to join us for our Sunday service this week. Here’s the schedule:</p>
-          ${schedule}
-    
-          <p style="line-height: 1.6;">We are looking forward to worshiping with you and growing together in faith. Your presence would be a blessing to us!</p>
-    
-          <div style="border-top: 2px solid #007bff; padding-top: 20px; margin-top: 20px;">
-            <p><strong>Location:</strong> @ ${ADDRESS ? ADDRESS : address}</p>
-            <p><strong>Date:</strong> This Sunday</p>
-            <p><strong>Contact:</strong> apostolicfaithjabi@gmail.com | 08130567664</p>
-          </div>
-    
-          <p style="line-height: 1.6;">We pray for God's blessings and look forward to seeing you soon.</p>
-    
-          <p>In Christ,</p>
-    
-          <p style="font-weight: bold; color: #007bff;">The Apostolic Faith Church &copy; IT Team</p>
-        </div>
-      </div>
-    `;
+  <div style="font-family: Arial, sans-serif; background-color: #ffffff; padding: 20px; color: #000;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px;">
+      <h2 style="text-align: center;">Thank You for Your Application</h2>
+
+      <p>Dear <strong>${FIRSTNAME}</strong>,</p>
+
+      <p>Thank you for your interest in the <strong>Presidential Initiative for the Empowerment of Young Farmers</strong> (The Green Money Project) and for taking the time to complete and submit your application.</p>
+
+      <p>We have received an exceptionally high volume of applications, and our team has diligently reviewed each submission. We appreciate your patience and understanding throughout this process.</p>
+
+      <p>The first batch of candidates will be contacted in this month of March 2025 regarding the next steps. Applicants in subsequent batches will be contacted accordingly.</p>
+
+      <p>Stay updated by subscribing and following our social media pages:</p>
+
+      <ul style="list-style-type: none; padding: 0;">
+        <li><strong>YouTube:</strong> <a href="https://www.youtube.com/@thegreenmoneyproject" style="text-decoration: underline;">The Green Money Project</a></li>
+        <li><strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=61567909974481&mibextid=ZbWKwL" style="text-decoration: underline;">The Green Money Project</a></li>
+        <li><strong>Instagram:</strong> <a href="https://www.instagram.com/thegreenmoneyproject/profilecard/?igsh=NTY4NTliYm1ueTV1" style="text-decoration: underline;">@thegreenmoneyproject</a></li>
+        <li><strong>X (Twitter):</strong> <a href="https://x.com/thegreenmoneyng?t=ZoDE2M1SNoYZHi0q_vJmkg&s=09" style="text-decoration: underline;">@thegreenmoneyng</a></li>
+      </ul>
+
+      <p>We look forward to the opportunity of working with you on this impactful project.</p>
+
+      <p>Best regards,</p>
+      <p><strong>The Green Money Project Team</strong></p>
+    </div>
+  </div>
+`;
 
       const mailOptions = {
         from: process.env.EMAIL,
@@ -238,4 +241,8 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { sendMailerToMember, sendInvitationToAll, sendScheduledEmails };
+module.exports = {
+  sendMailerToMember,
+  sendInvitationToAll,
+  sendScheduledEmails,
+};

@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const initializeCronJobs = require("./CronJobs/index"); // Import cron jobs initialization
 
 // Connect to the database
-connectDB();
+// connectDB();
 
 const app = express();
 const port = process.env.PORT || 5000;
