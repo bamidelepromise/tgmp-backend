@@ -13,7 +13,6 @@ const initializeCronJobs = require("./CronJobs/index"); // Import cron jobs init
 const app = express();
 const port = process.env.PORT || 5000;
 
-
 // Middleware
 app.use(bodyParser.json());
 app.use(express.json());
