@@ -197,6 +197,7 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
             </div>
           </div>`;
 
+          
         const mailOptions = {
           from: process.env.EMAIL,
           to: EMAIL,
