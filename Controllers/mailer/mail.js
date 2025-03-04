@@ -183,6 +183,7 @@ const sendInvitationToAll = asyncHandler(async (req, res) => {
               <h2 style="text-align: center;">Thank You for Your Application</h2>
               <p>Dear <strong>${FIRSTNAME}</strong>,</p>
               <p>Thank you for your interest in the <strong>Presidential Initiative for the Empowerment of Young Farmers</strong> (The Green Money Project).</p>
+              <p>We have received an exceptionally high volume of applications, and our team has diligently reviewed each submission. We appreciate your patience and understanding throughout this process.</p>
               <p>The first batch of candidates will be contacted in March 2025 regarding the next steps.</p>
               <p>Stay updated by following our social media pages:</p>
               <ul style="list-style-type: none; padding: 0;">
